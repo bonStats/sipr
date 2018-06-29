@@ -32,6 +32,8 @@ sip(obj.fn, obj.gr = NULL, x.bounds = NULL, eq.fn = NULL, eq.gr = NULL,
 \item{ineq.gr.t}{(Optional) gradient of inequality constraint function w.r.t \code{t}.}
 
 \item{x.feasible}{List (or one) of feasible \code{x}.}
+
+\item{t.start}{(Optional) where to start the optimisation of the lower level problem. Defaults to \code{mean(ineq.tset)}.}
 }
 \value{
 sipo object

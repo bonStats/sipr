@@ -15,3 +15,7 @@ A predefined SIP problem
 \description{
 Create SIP objects \code{sipo} from classis SIP problems.
 }
+\details{
+Problem 1: Original problem
+Problem 2: # Ex. 3 Sect. 4 JJ Ruckman & A Shapiro (2009)
+}
