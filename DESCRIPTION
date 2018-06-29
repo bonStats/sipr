@@ -1,0 +1,13 @@
+Package: sipr
+Type: Package
+Title: Semi-Infinite Programming in R
+Version: 0.1.0
+Authors@R: person("Joshua J", "Bon", email = "joshuajbon@gmail.com", role = c("aut", "cre"))
+Description: Semi-infinite programs are a class of optimisation problems with finite variables and infinite constraints (parametrised with a function). 
+License: GPL-3 + file LICENSE
+Encoding: UTF-8
+LazyData: true
+URL: http://github.com/bonStats/sipr/
+BugReports: http://github.com/bonStats/sipr/issues
+Depends: Rsolnp
+RoxygenNote: 6.0.1
