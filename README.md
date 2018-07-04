@@ -1,6 +1,6 @@
 # sipr: Semi-infinite programming in `R`
 
-This package is currently being developed. It's aim is to provide methods optimisation of SIP problems.
+This package is currently being developed. It aims to provide optimisation methods for SIP problems.
 
 To get started, install this package from GitHub using the `devtools` package:
 
