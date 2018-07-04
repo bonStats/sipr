@@ -6,7 +6,7 @@
 \usage{
 sip(obj.fn, obj.gr = NULL, x.bounds = NULL, eq.fn = NULL, eq.gr = NULL,
   eq.val = NULL, ineq.fn, ineq.bounds, ineq.tset, ineq.gr.x = NULL,
-  ineq.gr.t = NULL, x.feasible)
+  ineq.gr.t = NULL, x.feasible, ...)
 }
 \arguments{
 \item{obj.fn}{Objective function to be minimized.}
@@ -33,10 +33,12 @@ sip(obj.fn, obj.gr = NULL, x.bounds = NULL, eq.fn = NULL, eq.gr = NULL,
 
 \item{x.feasible}{List (or one) of feasible \code{x}.}
 
+\item{...}{(Optional) Other items to store in the sipo.}
+
 \item{t.start}{(Optional) where to start the optimisation of the lower level problem. Defaults to \code{mean(ineq.tset)}.}
 }
 \value{
-sipo object
+A sipo: semi-infinite programming object
 }
 \description{
 Makes a \code{sipo} object to be optimised by SIP solvers included in \code{sipr}. \code{sipo} object contains objective function, constraints, and known feasible points (if applicable).
