@@ -15,14 +15,15 @@
 #' @param ineq.gr.t (Optional) gradient of inequality constraint function w.r.t \code{t}.
 #' @param x.feasible List (or one) of feasible \code{x}.
 #' @param t.start (Optional) where to start the optimisation of the lower level problem. Defaults to \code{mean(ineq.tset)}.
-#' @return sipo object
+#' @param ... (Optional) Other items to store in the sipo.
+#' @return A sipo: semi-infinite programming object
 #' @export
 
 sip <- function(obj.fn, obj.gr = NULL, x.bounds = NULL,
                 eq.fn = NULL, eq.gr = NULL, eq.val = NULL,
                 ineq.fn, ineq.bounds, ineq.tset,
                 ineq.gr.x = NULL, ineq.gr.t = NULL,
-                x.feasible){
+                x.feasible, ...){
 
   if(missing(obj.fn)) stop("obj.fn required")
   if(missing(ineq.fn)) stop("ineq.fn required")
@@ -44,7 +45,8 @@ sip <- function(obj.fn, obj.gr = NULL, x.bounds = NULL,
     eq = list(fn = eq.fn, gr = eq.gr, val = eq.val),
     ineq = list(fn = ineq.fn, bounds = NULL, tset = sort(ineq.tset), gr = list(x = ineq.gr.x, t = ineq.gr.t), type = NULL),
     x = list(bounds = NULL, feasible = x.feasible),
-    ll = list(fn = NULL, gr = NULL, gen = list(fn = NULL, gr = NULL), tstart = mean(ineq.tset))
+    ll = list(fn = NULL, gr = NULL, gen = list(fn = NULL, gr = NULL), tstart = mean(ineq.tset)),
+    ...
     ),
   class = "sipo")
 
