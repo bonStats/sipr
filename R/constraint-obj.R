@@ -7,6 +7,7 @@
 #' @param gr.t (Optional) gradient (vector) of inequality constraint function w.r.t \code{t}.
 #' @param fn.bounds Lower and/or upper bound of \code{fn} input argument \code{x}. One, but not both, may be infinite.
 #' @param t.bounds List of compact index set(s) for \code{t} in which inequality constraint \code{fn} must be satisfied. Must be finite.
+#' @param t.start (Optional) where to start the optimisation of the lower level problem. Defaults to \code{mean(ineq.tset)}.
 #' @return An infinite constraint object (\code{class = c("constraint","inequality","infinite")})
 #' @export
 
@@ -33,6 +34,13 @@ inf_ineq_constr <- function(fn, gr.x = NULL, gr.t = NULL, fn.bounds, t.bounds){
     t_bounds <- t.bounds
   }
 
+  if(is.missing(t.start)){
+    t_start <- sapply(t_bounds, mean)
+  } else {
+    t_start <- t.start
+  }
+
+
   if(any(sapply(t_bounds, class) != "numeric") |
      any(sapply(t_bounds, length) != 2) |
      any(!sapply(t_bounds, is.finite))) stop("t.bounds must have elements that are numeric, length == 2, and finite")
@@ -51,7 +59,7 @@ inf_ineq_constr <- function(fn, gr.x = NULL, gr.t = NULL, fn.bounds, t.bounds){
              boundtype = NULL,
              gr = NULL,
              gen = list(fn = NULL, gr = NULL),
-             tstart = sapply(t_bounds, mean))
+             tstart = t_start)
     ),
     class = c("constraint","inequality","infinite"))
 
