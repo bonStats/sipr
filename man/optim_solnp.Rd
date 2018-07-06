@@ -9,9 +9,9 @@ optim_solnp(pars, sip, control = list(), ...)
 \arguments{
 \item{pars}{starting parameter vector.}
 
-\item{control}{See control argument in \code{\link[Rsolnp]{solnp}}.}
+\item{sip}{SIP object created by \code{\link{make_sip}}.}
 
-\item{sipo}{SIP object created by \code{\link{make_sip}}.}
+\item{control}{See control argument in \code{\link[Rsolnp]{solnp}}.}
 }
 \value{
 Results from \code{\link[Rsolnp]{solnp}} as sipo object (see \code{\link{sip}}).
