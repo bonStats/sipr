@@ -4,38 +4,23 @@
 \alias{sip}
 \title{Make a semi-infinite program R object, \code{sipo}.}
 \usage{
-sip(obj.fn, obj.gr = NULL, x.bounds = NULL, eq.fn = NULL, eq.gr = NULL,
-  eq.val = NULL, ineq.fn, ineq.bounds, ineq.tset, ineq.gr.x = NULL,
-  ineq.gr.t = NULL, x.feasible, ...)
+sip(fn, gr = NULL, lower = NULL, upper = NULL, constraint,
+  x.feasible = NULL, ...)
 }
 \arguments{
-\item{obj.fn}{Objective function to be minimized.}
+\item{fn}{Objective function to be minimized.}
 
-\item{obj.gr}{(Optional) gradient (vector) of objective function \code{obj.fn}.}
+\item{gr}{(Optional) gradient (vector) of objective function \code{fn}.}
 
-\item{x.bounds}{(Optional) Lower and upper bound of \code{fn} input argument \code{x}. As list, or 2-row matrix if multiple.}
+\item{lower}{(Optional) Lower bound of \code{x}.}
 
-\item{eq.fn}{(Optional) Equality constraint (vector) function.}
+\item{upper}{(Optional) Upper bound of \code{x}.}
 
-\item{eq.gr}{(Optional) gradient (vector) of equality constraint function.}
+\item{constraint}{List of constraint objects to be used.}
 
-\item{eq.val}{(Optional) Value(s) equality constraint(s) are equal to.}
-
-\item{ineq.fn}{Inequality constraint function. First argument for objective input variable \code{x}. Second argument for index set variable \code{t}.}
-
-\item{ineq.bounds}{Lower and upper bound of \code{fn} input argument \code{x}. One, but not both, may be infinite.}
-
-\item{ineq.tset}{Compact index set for \code{t} in which inequality constraint \code{ineq.fn} must be satisfied. Must be finite.}
-
-\item{ineq.gr.x}{(Optional) gradient (vector) of inequality constraint function w.r.t \code{x}.}
-
-\item{ineq.gr.t}{(Optional) gradient of inequality constraint function w.r.t \code{t}.}
-
-\item{x.feasible}{List (or one) of feasible \code{x}.}
+\item{x.feasible}{(Optional) List of feasible x (vector) points for optimisation.}
 
 \item{...}{(Optional) Other items to store in the sipo.}
-
-\item{t.start}{(Optional) where to start the optimisation of the lower level problem. Defaults to \code{mean(ineq.tset)}.}
 }
 \value{
 A sipo: semi-infinite programming object
