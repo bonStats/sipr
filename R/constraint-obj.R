@@ -11,7 +11,7 @@
 #' @return An infinite constraint object (\code{class = c("constraint","inequality","infinite")})
 #' @export
 
-inf_ineq_constr <- function(fn, gr.x = NULL, gr.t = NULL, fn.bounds, t.bounds){
+inf_ineq_constr <- function(fn, gr.x = NULL, gr.t = NULL, fn.bounds, t.bounds, t.start = NULL){
 
   if(missing(fn)) stop("fn for inequality required")
   if(missing(fn.bounds)) stop("fn.bounds for inequality required")
@@ -34,12 +34,11 @@ inf_ineq_constr <- function(fn, gr.x = NULL, gr.t = NULL, fn.bounds, t.bounds){
     t_bounds <- t.bounds
   }
 
-  if(is.missing(t.start)){
+  if(missing(t.start)){
     t_start <- sapply(t_bounds, mean)
   } else {
     t_start <- t.start
   }
-
 
   if(any(sapply(t_bounds, class) != "numeric") |
      any(sapply(t_bounds, length) != 2) |
