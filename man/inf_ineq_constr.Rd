@@ -4,7 +4,8 @@
 \alias{inf_ineq_constr}
 \title{Make a infinite inequality constraint object to be used by in \code{sip} to create a \code{sipo}.}
 \usage{
-inf_ineq_constr(fn, gr.x = NULL, gr.t = NULL, fn.bounds, t.bounds)
+inf_ineq_constr(fn, gr.x = NULL, gr.t = NULL, fn.bounds, t.bounds,
+  t.start = NULL)
 }
 \arguments{
 \item{fn}{Inequality function \code{g(x,t)}.}
@@ -16,6 +17,8 @@ inf_ineq_constr(fn, gr.x = NULL, gr.t = NULL, fn.bounds, t.bounds)
 \item{fn.bounds}{Lower and/or upper bound of \code{fn} input argument \code{x}. One, but not both, may be infinite.}
 
 \item{t.bounds}{List of compact index set(s) for \code{t} in which inequality constraint \code{fn} must be satisfied. Must be finite.}
+
+\item{t.start}{(Optional) where to start the optimisation of the lower level problem. Defaults to \code{mean(ineq.tset)}.}
 }
 \value{
 An infinite constraint object (\code{class = c("constraint","inequality","infinite")})
