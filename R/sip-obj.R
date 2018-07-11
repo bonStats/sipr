@@ -71,7 +71,7 @@ sip <- function(fn, gr = NULL, lower = NULL, upper = NULL,
     }
   }
 
-  # get finite inequ  ality functions, bounds, gradient
+  # get finite inequality functions, bounds, gradient
   if(sum(fin_ineq_i) > 0){
     prog$ineq$fin$fn <- function(x, ...){
       sapply(prog$constraint_list[fin_ineq_i], function(cn) cn$fn(x = x, ...))
