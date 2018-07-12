@@ -20,8 +20,8 @@ optim_solnp <- function(pars, sip, control = list(), ...){
           ineqfun = sip$ineq$all$fn,
           ineqLB = sip$ineq$all$lower,
           ineqUB = sip$ineq$all$upper,
-          LB = sip$lower,
-          UB = sip$upper,
+          LB = sip$x$lower,
+          UB = sip$x$upper,
           control = control, ...)
 
   # convert to standardised output
