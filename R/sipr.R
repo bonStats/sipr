@@ -4,5 +4,6 @@
 #'
 #' @docType package
 #' @name sipr
+#' @import quadprog
 #' @import Rsolnp
 NULL
