@@ -2,31 +2,31 @@
 #'
 #' Only one infinite constraint may be specified per object.
 #'
-#' @param fn Inequality function \code{g(x,t)}.
-#' @param gr.x (Optional) gradient (vector) of inequality constraint function w.r.t \code{x}.
-#' @param gr.t (Optional) gradient (vector) of inequality constraint function w.r.t \code{t}.
-#' @param fn.bounds Lower and/or upper bound of \code{fn} input argument \code{x}. One, but not both, may be infinite.
-#' @param t.bounds List of compact index set(s) for \code{t} in which inequality constraint \code{fn} must be satisfied. Must be finite.
+#' @param fun Inequality function \code{g(x,t)}.
+#' @param grad.x (Optional) gradient (vector) of inequality constraint function w.r.t \code{x}.
+#' @param grad.t (Optional) gradient (vector) of inequality constraint function w.r.t \code{t}.
+#' @param fun.bounds Lower and/or upper bound of \code{fun} input argument \code{x}. One, but not both, may be infinite.
+#' @param t.bounds List of compact index set(s) for \code{t} in which inequality constraint \code{fun} must be satisfied. Must be finite.
 #' @param t.start (Optional) where to start the optimisation of the lower level problem. Defaults to \code{mean(ineq.tset)}.
 #' @return An infinite constraint object (\code{class = c("constraint","inequality","infinite")})
 #' @export
 
-inf_ineq_constr <- function(fn, gr.x = NULL, gr.t = NULL, fn.bounds, t.bounds, t.start = NULL){
+infinite_inequality_constraint <- function(fun, grad.x = NULL, grad.t = NULL, fun.bounds, t.bounds, t.start = NULL){
 
-  if(missing(fn)) stop("fn for inequality required")
-  if(missing(fn.bounds)) stop("fn.bounds for inequality required")
+  if(missing(fun)) stop("fun for inequality required")
+  if(missing(fun.bounds)) stop("fun.bounds for inequality required")
   if(missing(t.bounds)) stop("t.bounds (index set bounds) for inequality required")
 
-  if(class(fn) != "function") stop("fn must be function")
+  if(class(fun) != "function") stop("fun must be function")
 
-  if(!all(c("x","t") %in% names(formals(fn)))) stop("fn must have arguments x and t")
+  if(!all(c("x","t") %in% names(formals(fun)))) stop("fun must have arguments x and t")
 
-  if(!missing(gr.x) & !all(c("x","t") %in% names(formals(gr.x)))) stop("gr.x must have arguments x and t")
-  if(!missing(gr.t) & !all(c("x","t") %in% names(formals(gr.t)))) stop("gr.t must have arguments x and t")
+  if(!missing(grad.x) & !all(c("x","t") %in% names(formals(grad.x)))) stop("grad.x must have arguments x and t")
+  if(!missing(grad.t) & !all(c("x","t") %in% names(formals(grad.t)))) stop("grad.t must have arguments x and t")
 
-  if(class(fn.bounds) != "numeric" |
-     length(fn.bounds) != 2 |
-     sum(is.finite(fn.bounds)) < 1) stop("fn.bounds must be numeric and length == 2 with at least one element finite")
+  if(class(fun.bounds) != "numeric" |
+     length(fun.bounds) != 2 |
+     sum(is.finite(fun.bounds)) < 1) stop("fun.bounds must be numeric and length == 2 with at least one element finite")
 
   if(class(t.bounds) != "list"){
     t_bounds <- list(t.bounds)
@@ -47,17 +47,17 @@ inf_ineq_constr <- function(fn, gr.x = NULL, gr.t = NULL, fn.bounds, t.bounds, t
   cstr <- structure(
     list(
       original =
-        list(fn = fn,
-             gr = list(x = gr.x, t = gr.t),
-             bounds = sort(fn.bounds),
+        list(fun = fun,
+             gr = list(x = grad.x, t = grad.t),
+             bounds = sort(fun.bounds),
              tset = lapply(t_bounds, sort)),
       lowerlevel =
-        list(fn = NULL,
+        list(fun = NULL,
              lower = NULL,
              upper = NULL,
              boundtype = NULL,
              gr = NULL,
-             gen = list(fn = NULL, gr = NULL),
+             gen = list(fun = NULL, gr = NULL),
              tstart = t_start)
     ),
     class = c("constraint","inequality","infinite"))
@@ -75,7 +75,7 @@ inf_ineq_constr <- function(fn, gr.x = NULL, gr.t = NULL, fn.bounds, t.bounds, t
     cstr$lowerlevel$upper <- c(Inf, cstr$original$bounds[2])
   }
 
-  cstr$lowerlevel$gen$fn <- function(par.t, x, bound, ...){
+  cstr$lowerlevel$gen$fun <- function(par.t, x, bound, ...){
 
     sc <- ifelse(bound == "lower", 1, -1)
 
@@ -86,27 +86,27 @@ inf_ineq_constr <- function(fn, gr.x = NULL, gr.t = NULL, fn.bounds, t.bounds, t
     }
 
     opt <- optim(par = par.t,
-                 fn = function(t) cstr$original$fn(x = x, t),
+                 fun = function(t) cstr$original$fun(x = x, t),
                  gr = gr,
                  lower = lower_tset,
                  upper = upper_tset,
-                 control = list(fnscale = sc), method = "L-BFGS-B",
+                 control = list(funscale = sc), method = "L-BFGS-B",
                  ...)
 
     return(opt)
 
   }
 
-  cstr$lowerlevel$fn <- function(x, ...){
+  cstr$lowerlevel$fun <- function(x, ...){
 
-    sapply(cstr$lowerlevel$boundtype, function(bnd) cstr$lowerlevel$gen$fn(par.t = cstr$lowerlevel$tstart, x = x, bound = bnd, ...)$value)
+    sapply(cstr$lowerlevel$boundtype, function(bnd) cstr$lowerlevel$gen$fun(par.t = cstr$lowerlevel$tstart, x = x, bound = bnd, ...)$value)
 
   }
 
   if(!is.null(cstr$original$gr$x)){
 
     cstr$lowerlevel$gen$gr <- function(par.t, x, bound, ...){
-      t_opt <- cstr$lowerlevel$gen$fn(par.t = par.t, x = x, bound = bound, ...)
+      t_opt <- cstr$lowerlevel$gen$fun(par.t = par.t, x = x, bound = bound, ...)
       return(cstr$original$gr$x(x = x, t_opt$par)) # envelope / implicit function theorem
 
     }
@@ -129,30 +129,30 @@ inf_ineq_constr <- function(fn, gr.x = NULL, gr.t = NULL, fn.bounds, t.bounds, t
 #'
 #' Only one infinite constraint may be specified per object.
 #'
-#' @param fn Inequality function \code{g(x,t)}.
-#' @param fn.bounds Lower and/or upper bound of \code{fn} input argument \code{x}. One, but not both, may be infinite.
+#' @param fun Inequality function \code{g(x,t)}.
+#' @param fun.bounds Lower and/or upper bound of \code{fun} input argument \code{x}. One, but not both, may be infinite.
 #' @return A constraint object (\code{class = c("constraint","inequality","finite")}).
 #' @export
 
-ineq_constr <- function(fn, gr.x = NULL, fn.bounds){
+finite_inequality_constraint <- function(fun, grad.x = NULL, fun.bounds){
 
-  if(missing(fn)) stop("fn for inequality required")
-  if(missing(fn.bounds)) stop("fn.bounds for inequality required")
+  if(missing(fun)) stop("fun for inequality required")
+  if(missing(fun.bounds)) stop("fun.bounds for inequality required")
 
-  if(class(fn) != "function") stop("fn must be function")
+  if(class(fun) != "function") stop("fun must be function")
 
-  if(!all(c("x") %in% names(formals(fn)))) stop("fn must have arguments x")
+  if(!all(c("x") %in% names(formals(fun)))) stop("fun must have arguments x")
 
-  if(!missing(gr.x) & !all(c("x") %in% names(formals(gr.x)))) stop("gr.x must have arguments x and t")
+  if(!missing(grad.x) & !all(c("x") %in% names(formals(grad.x)))) stop("grad.x must have arguments x and t")
 
-  if(class(fn.bounds) != "numeric" |
-     length(fn.bounds) != 2 |
-     sum(is.finite(fn.bounds)) < 1) stop("fn.bounds must be numeric and length == 2 with at least one element finite")
+  if(class(fun.bounds) != "numeric" |
+     length(fun.bounds) != 2 |
+     sum(is.finite(fun.bounds)) < 1) stop("fun.bounds must be numeric and length == 2 with at least one element finite")
 
   cstr <- structure(
-    list(fn = fn,
-         gr = gr.x,
-         bounds = sort(fn.bounds)
+    list(fun = fun,
+         gr = grad.x,
+         bounds = sort(fun.bounds)
     ),
     class = c("constraint","inequality","finite"))
 
@@ -165,27 +165,27 @@ ineq_constr <- function(fn, gr.x = NULL, fn.bounds){
 #'
 #' Only one constraint may be specified per object.
 #'
-#' @param fn Equality function \code{g(x,t)}.
-#' @param fn.bounds Lower and/or upper bound of \code{fn} input argument \code{x}. One, but not both, may be infinite.
+#' @param fun Equality function \code{g(x,t)}.
+#' @param fun.bounds Lower and/or upper bound of \code{fun} input argument \code{x}. One, but not both, may be infinite.
 #' @param value Value for equality.
 #' @return A constraint object (\code{class = c("constraint","equality","finite")})
 #' @export
 
-eq_constr <- function(fn, gr.x = NULL, value){
+finite_equality_constraint <- function(fun, grad.x = NULL, value){
 
-  if(missing(fn)) stop("fn for equality required")
+  if(missing(fun)) stop("fun for equality required")
 
   if(missing(value)) stop("value for equality required")
 
-  if(class(fn) != "function") stop("fn must be function")
+  if(class(fun) != "function") stop("fun must be function")
 
-  if(!all(c("x") %in% names(formals(fn)))) stop("fn must have arguments x")
+  if(!all(c("x") %in% names(formals(fun)))) stop("fun must have arguments x")
 
-  if(!missing(gr.x) & !all(c("x") %in% names(formals(gr.x)))) stop("gr.x must have arguments x")
+  if(!missing(grad.x) & !all(c("x") %in% names(formals(grad.x)))) stop("grad.x must have arguments x")
 
   cstr <- structure(
-    list(fn = fn,
-         gr = gr.x,
+    list(fun = fun,
+         gr = grad.x,
          value = value),
     class = c("constraint","equality","finite"))
 
